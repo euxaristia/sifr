@@ -1,0 +1,15 @@
+# Binary files
+sifr
+sifr.exe
+
+# Build files
+*.out
+*.test
+*.prof
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Agent specific files
+.antigravitycli/
