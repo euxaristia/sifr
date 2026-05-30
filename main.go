@@ -68,6 +68,36 @@ func decryptCaesar(text string, shift int) string {
 	return sb.String()
 }
 
+func parseInputFormat(text, pattern string) (prefix, inner, suffix string, innerOnly bool) {
+	firstCurly := strings.Index(text, "{")
+	lastCurly := strings.LastIndex(text, "}")
+	if firstCurly == -1 || lastCurly == -1 || firstCurly >= lastCurly {
+		return "", "", "", false
+	}
+
+	prefix = text[:firstCurly+1]
+	suffix = text[lastCurly:]
+	inner = text[firstCurly+1:lastCurly]
+
+	// Heuristic: if the prefix (excluding '{') contains the pattern (case-insensitive),
+	// we should only shift the inner part.
+	prefixName := text[:firstCurly]
+	if strings.Contains(strings.ToLower(prefixName), strings.ToLower(pattern)) {
+		return prefix, inner, suffix, true
+	}
+
+	return "", "", "", false
+}
+
+func processShift(text string, shift int, pattern string) string {
+	prefix, inner, suffix, innerOnly := parseInputFormat(text, pattern)
+	if innerOnly {
+		return prefix + decryptCaesar(inner, shift) + suffix
+	}
+	return decryptCaesar(text, shift)
+}
+
+
 func isTTY() bool {
 	fileInfo, err := os.Stdout.Stat()
 	if err != nil {
@@ -164,7 +194,7 @@ func main() {
 
 	if hasShift {
 		// Single shift mode
-		decrypted := decryptCaesar(trimmedInput, shiftVal)
+		decrypted := processShift(trimmedInput, shiftVal, patternVal)
 		if cleanMode {
 			fmt.Println(decrypted)
 		} else {
@@ -203,7 +233,7 @@ func main() {
 
 func runBrute(input string, useColor bool) {
 	for s := 1; s <= 25; s++ {
-		decrypted := decryptCaesar(input, s)
+		decrypted := processShift(input, s, patternVal)
 		if cleanMode {
 			fmt.Println(decrypted)
 		} else {
@@ -227,7 +257,7 @@ func runBrute(input string, useColor bool) {
 func runAuto(input string, useColor bool, explicit bool) bool {
 	matched := false
 	for s := 1; s <= 25; s++ {
-		decrypted := decryptCaesar(input, s)
+		decrypted := processShift(input, s, patternVal)
 		if containsPattern(decrypted, patternVal) {
 			matched = true
 			if cleanMode {
