@@ -37,7 +37,8 @@ func init() {
 	flag.BoolVar(&versionMode, "version", false, "Print version information")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "sifr - A fast, POSIX-compliant Caesar cipher solver for picoCTF\n\n")
+		fmt.Fprintf(os.Stderr, "sifr - A fast, POSIX-compliant Caesar cipher solver for picoCTF\n")
+		fmt.Fprintf(os.Stderr, "Created by euxaristia (https://github.com/euxaristia)\n\n")
 		fmt.Fprintf(os.Stderr, "Usage:\n")
 		fmt.Fprintf(os.Stderr, "  sifr [flags] [ciphertext_or_filepath]\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
@@ -143,6 +144,7 @@ func main() {
 
 	if versionMode {
 		fmt.Println("sifr v1.0.0")
+		fmt.Println("Created by euxaristia (https://github.com/euxaristia)")
 		return
 	}
 
