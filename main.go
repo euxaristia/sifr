@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	shiftVal   int
-	bruteMode  bool
-	autoMode   bool
-	patternVal string
-	cleanMode  bool
+	shiftVal    int
+	bruteMode   bool
+	autoMode    bool
+	patternVal  string
+	cleanMode   bool
+	versionMode bool
 )
 
 func init() {
@@ -32,6 +33,9 @@ func init() {
 	flag.BoolVar(&cleanMode, "c", false, "Only output the raw plaintext, omitting metadata and color codes")
 	flag.BoolVar(&cleanMode, "clean", false, "Only output the raw plaintext, omitting metadata and color codes")
 
+	flag.BoolVar(&versionMode, "v", false, "Print version information")
+	flag.BoolVar(&versionMode, "version", false, "Print version information")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "sifr - A fast, POSIX-compliant Caesar cipher solver for picoCTF\n\n")
 		fmt.Fprintf(os.Stderr, "Usage:\n")
@@ -42,6 +46,7 @@ func init() {
 		fmt.Fprintf(os.Stderr, "  -a, --auto            Auto-solve mode: check all shifts for pattern (default pattern: picoCTF)\n")
 		fmt.Fprintf(os.Stderr, "  -p, --pattern <str>   Custom pattern to look for in auto-solve mode (default: picoCTF)\n")
 		fmt.Fprintf(os.Stderr, "  -c, --clean           Only output the raw plaintext, omitting metadata and color codes\n")
+		fmt.Fprintf(os.Stderr, "  -v, --version         Show version information\n")
 		fmt.Fprintf(os.Stderr, "  -h, --help            Show this help message\n")
 	}
 }
@@ -105,6 +110,11 @@ func highlight(text, pattern string, color bool) string {
 
 func main() {
 	flag.Parse()
+
+	if versionMode {
+		fmt.Println("sifr v1.0.0")
+		return
+	}
 
 	// Gather inputs
 	var input string
