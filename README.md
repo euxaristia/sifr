@@ -88,8 +88,6 @@ Read from an encrypted text file directly:
 $ sifr flag.enc
 ```
 
----
-
 ## License
 
-MIT
+This software is released into the public domain under [The Unlicense](LICENSE). Feel free to copy, modify, publish, sell, or distribute it however you wish. See the `LICENSE` file for more details.
