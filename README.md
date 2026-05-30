@@ -23,10 +23,10 @@ Ensure you have [Go](https://go.dev/) installed, then run:
 
 ```bash
 # Build locally
-go build -o sifr
+go build -o sifr ./src
 
 # Or install it to your $GOPATH/bin
-go install
+go install ./src
 ```
 
 ---
