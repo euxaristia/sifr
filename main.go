@@ -78,7 +78,7 @@ func parseInputFormat(text, pattern string) (prefix, inner, suffix string, inner
 
 	prefix = text[:firstCurly+1]
 	suffix = text[lastCurly:]
-	inner = text[firstCurly+1:lastCurly]
+	inner = text[firstCurly+1 : lastCurly]
 
 	// Heuristic: if the prefix (excluding '{') contains the pattern (case-insensitive),
 	// we should only shift the inner part.
@@ -97,7 +97,6 @@ func processShift(text string, shift int, pattern string) string {
 	}
 	return decryptCaesar(text, shift)
 }
-
 
 func isTTY() bool {
 	fileInfo, err := os.Stdout.Stat()
