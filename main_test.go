@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
@@ -168,5 +169,76 @@ func TestProcessShift(t *testing.T) {
 				t.Errorf("processShift(%q, %d, %q) = %q; want %q", tt.input, tt.shift, tt.pattern, actual, tt.expected)
 			}
 		})
+	}
+}
+
+func TestDecryptNewCaesar(t *testing.T) {
+	input := "fegdeogdgecoeocgcgchcfcffccfca"
+	expected := "et_tu?_77866c61"
+	actual, err := decryptNewCaesar(input, 15)
+	if err != nil {
+		t.Fatalf("decryptNewCaesar returned error: %v", err)
+	}
+	if actual != expected {
+		t.Errorf("decryptNewCaesar(%q, 15) = %q; want %q", input, actual, expected)
+	}
+
+	_, err = decryptNewCaesar("xyz", 0)
+	if err == nil {
+		t.Error("expected error for invalid characters, but got nil")
+	}
+
+	_, err = decryptNewCaesar("abc", 0)
+	if err == nil {
+		t.Error("expected error for odd length, but got nil")
+	}
+}
+
+func TestIsValidNewCaesar(t *testing.T) {
+	err := isValidNewCaesar("picoCTF{fegdeogdgecoeocgcgchcfcffccfca}", "picoCTF")
+	if err != nil {
+		t.Errorf("isValidNewCaesar returned error for valid input: %v", err)
+	}
+
+	err = isValidNewCaesar("picoCTF{fegdeogdgecoeocgcgchcfcffccfcz}", "picoCTF")
+	if err == nil {
+		t.Error("expected error for invalid character, but got nil")
+	}
+
+	err = isValidNewCaesar("picoCTF{feg}", "picoCTF")
+	if err == nil {
+		t.Error("expected error for odd length, but got nil")
+	}
+}
+
+func TestIsPrintable(t *testing.T) {
+	if !isPrintable("hello world") {
+		t.Error("expected 'hello world' to be printable")
+	}
+	if isPrintable("hello\x01world") {
+		t.Error("expected string with control char to not be printable")
+	}
+}
+
+func TestParsePowerShellEncodedCommand(t *testing.T) {
+	origArgs := os.Args
+	defer func() { os.Args = origArgs }()
+
+	// Test with matching -encodedCommand (UTF-16LE base64 for "fegdeogdgecoeocgcgchcfcffccfca")
+	os.Args = []string{"sifr", "picoCTF", "-encodedCommand", "ZgBlAGcAZABlAG8AZwBkAGcAZQBjAG8AZQBvAGMAZwBjAGcAYwBoAGMAZgBjAGYAZgBjAGMAZgBjAGEA"}
+	expected := "picoCTF{fegdeogdgecoeocgcgchcfcffccfca}"
+	actual, ok := parsePowerShellEncodedCommand("picoCTF")
+	if !ok {
+		t.Error("expected parsePowerShellEncodedCommand to return true, but got false")
+	}
+	if actual != expected {
+		t.Errorf("parsePowerShellEncodedCommand(...) = %q; want %q", actual, expected)
+	}
+
+	// Test without -encodedCommand
+	os.Args = []string{"sifr", "picoCTF"}
+	_, ok = parsePowerShellEncodedCommand("picoCTF")
+	if ok {
+		t.Error("expected parsePowerShellEncodedCommand to return false when flag is absent, but got true")
 	}
 }

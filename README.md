@@ -45,6 +45,7 @@ Flags:
   -a, --auto            Auto-solve mode: check all shifts for pattern (default pattern: picoCTF)
   -p, --pattern <str>   Custom pattern to look for in auto-solve mode (default: picoCTF)
   -c, --clean           Only output the raw plaintext, omitting metadata and color codes
+  -n, --new-caesar      Use New Caesar cipher (custom Base16 / modulo-16 solver)
   -h, --help            Show this help message
 ```
 
@@ -55,6 +56,14 @@ Pass the ciphertext as an argument. `sifr` automatically scans all shifts for `p
 ```bash
 $ sifr "cvpbPGS{guvf_vf_n_grfg}"
 Shift 13 (MATCH): picoCTF{this_is_a_test}
+```
+
+#### 2. Solving New Caesar Ciphers
+Use the `-n` or `--new-caesar` flag to crack challenges like picoCTF's "New Caesar":
+```bash
+$ sifr -n "picoCTF{fegdeogdgecoeocgcgchcfcffccfca}"
+Shift  0 (key a) (MATCH): picoCTF{TcNcd.N&&'%%R% }
+Shift 15 (key p) (MATCH): picoCTF{et_tu?_77866c61}
 ```
 
 #### 2. Brute-Forcing Unfamiliar Ciphertext
